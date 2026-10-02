@@ -40,3 +40,6 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#secret
+client_secret_939886021549-56q8gdjhij4s8jd2424e4dqg30f891hr.apps.googleusercontent.com.json
