@@ -1,0 +1,27 @@
+<header class="app-navbar">
+    <div class="navbar-search">
+        <i data-lucide="search" style="width: 16px; height: 16px; color: var(--text-muted);"></i>
+        <input type="text" placeholder="Buscar clientes, CI/NIT, asuntos..." id="globalSearchInput">
+    </div>
+
+    <div class="navbar-user">
+        <div class="user-badge-profile">
+            <div class="user-avatar">
+                {{ request.user.username|slice:":1"|upper|default:"U" }}
+            </div>
+            <div>
+                <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-primary);">
+                    {{ request.user.get_full_name|default:request.user.username|default:"Usuario" }}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                    {{ request.user.get_rol_display|default:"Administrador" }}
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'usuarios:logout' %}" class="btn btn-secondary btn-sm" title="Cerrar Sesión">
+            <i data-lucide="log-out" style="width: 15px; height: 15px;"></i>
+            <span>Salir</span>
+        </a>
+    </div>
+</header>

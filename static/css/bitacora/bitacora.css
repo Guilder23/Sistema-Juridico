@@ -1,0 +1,36 @@
+/* Bitacora Styles */
+.timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    padding-left: 2.5rem;
+}
+
+.timeline-list::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 11px;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-row {
+    position: relative;
+}
+
+.timeline-bullet {
+    position: absolute;
+    left: -2.5rem;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

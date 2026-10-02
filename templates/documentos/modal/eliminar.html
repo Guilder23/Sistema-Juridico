@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Documento -->
+<div class="modal-overlay" id="modalEliminarDocumento">
+    <div class="modal-container" style="max-width: 460px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Archivo</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarDocumento')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarDocumento" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Deseas eliminar el documento <strong id="delete_titulo_documento" style="color: #fff;"></strong> del sistema?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarDocumento')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

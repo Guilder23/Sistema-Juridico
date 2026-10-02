@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Bitácora -->
+<div class="modal-overlay" id="modalEliminarBitacora">
+    <div class="modal-container" style="max-width: 440px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Bitácora</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarBitacora')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarBitacora" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Deseas eliminar esta entrada del historial de actividades?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarBitacora')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Informe -->
+<div class="modal-overlay" id="modalEliminarReporte">
+    <div class="modal-container" style="max-width: 440px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Informe</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarReporte')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarReporte" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Estás seguro de eliminar este informe generado?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarReporte')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

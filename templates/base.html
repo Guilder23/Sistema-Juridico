@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LexDocs IA - Sistema de Gestión Documental y Clientes{% endblock %}</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/componentes/layout.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-layout">
+        {% include 'componentes/sidebar.html' %}
+        
+        <div class="main-content">
+            {% include 'componentes/navbar.html' %}
+            
+            <main class="content-container">
+                {% if messages %}
+                    <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        {% for message in messages %}
+                            <div class="badge badge-{{ message.tags }}" style="padding: 0.75rem 1.25rem; font-size: 0.875rem; border-radius: 8px;">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+            {% include 'componentes/footer.html' %}
+        </div>
+    </div>
+
+    <!-- Modales de cada pantalla -->
+    {% block modals %}{% endblock %}
+
+    <!-- Core Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        // Renderizar iconos de Lucide
+        lucide.createIcons();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

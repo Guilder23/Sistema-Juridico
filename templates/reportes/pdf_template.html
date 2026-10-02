@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ reporte.titulo }}</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 40px; color: #111; line-height: 1.6; }
+        .header { border-bottom: 2px solid #222; padding-bottom: 15px; margin-bottom: 25px; }
+        .title { font-size: 22px; font-weight: bold; margin: 0; }
+        .meta { color: #555; font-size: 13px; margin-top: 5px; }
+        .content { white-space: pre-wrap; font-size: 14px; background: #fdfdfd; padding: 20px; border: 1px solid #ddd; }
+        .footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 12px; color: #777; display: flex; justify-content: space-between; }
+        @media print {
+            .no-print { display: none; }
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="margin-bottom: 20px;">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #4F46E5; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            🖨️ Imprimir / Guardar como PDF
+        </button>
+        <button onclick="window.close()" style="padding: 10px 20px; background: #eee; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+            Cerrar
+        </button>
+    </div>
+
+    <div class="header">
+        <h1 class="title">{{ reporte.titulo }}</h1>
+        <div class="meta">
+            <strong>Cliente:</strong> {{ reporte.cliente.nombre_razon_social }} (NIT/CI: {{ reporte.cliente.ci_nit }})<br>
+            <strong>Tipo:</strong> {{ reporte.get_tipo_display }} &bull; 
+            <strong>Fecha de Emisión:</strong> {{ reporte.fecha_generacion|date:"d/m/Y H:i" }}
+        </div>
+    </div>
+
+    <div class="content">
+{{ reporte.contenido }}
+    </div>
+
+    <div class="footer">
+        <div>LexDocs IA &bull; Sistema Jurídico y Documental</div>
+        <div>Generado por: {{ reporte.generado_por.get_full_name|default:reporte.generado_por.username|default:"Sistema" }}</div>
+    </div>
+</body>
+</html>

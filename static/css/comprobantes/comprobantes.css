@@ -1,0 +1,40 @@
+/* Comprobantes Styles */
+.receipt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.receipt-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition);
+}
+
+.receipt-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-hover);
+}
+
+.receipt-img-container {
+    height: 170px;
+    width: 100%;
+    background: #F1F5F9;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.receipt-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.receipt-details {
+    padding: 1.25rem;
+}

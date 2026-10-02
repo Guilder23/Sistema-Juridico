@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Generación de Informes - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reportes/reportes.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">Informes y Reportes Formales</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Compilación de estados de cuenta, estado de procesos y expedientes para presentación al cliente.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('modalGenerarReporte')">
+        <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
+        <span>Generar Nuevo Informe</span>
+    </button>
+</div>
+
+<div class="report-card-grid">
+    {% for r in reportes %}
+    <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                <span class="badge badge-primary">{{ r.get_tipo_display }}</span>
+                <small style="color: var(--text-muted);">{{ r.fecha_generacion|date:"d/m/Y" }}</small>
+            </div>
+            <h3 style="font-size: 1.15rem; color: var(--text-primary); font-weight: 700; margin-bottom: 0.35rem;">{{ r.titulo }}</h3>
+            <p style="color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;">
+                {{ r.cliente.nombre_razon_social }}
+            </p>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); background: #F8FAFC; border: 1px solid var(--border-color); padding: 0.75rem; border-radius: 6px; font-family: var(--font-mono); max-height: 100px; overflow: hidden;">
+                {{ r.contenido|truncatewords:20 }}
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <a href="{% url 'reportes:imprimir' r.id %}" target="_blank" class="btn btn-primary btn-sm">
+                <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
+                <span>Ver / Imprimir PDF</span>
+            </a>
+            <button class="btn btn-danger btn-sm" onclick="abrirModalEliminarReporte('{{ r.id }}')">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 4rem;" class="glass-panel">
+        No se han generado informes todavía. Haz clic en "Generar Nuevo Informe" para crear un resumen consolidado.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'reportes/modal/crear.html' %}
+    {% include 'reportes/modal/eliminar.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/reportes/reportes.js' %}"></script>
+{% endblock %}

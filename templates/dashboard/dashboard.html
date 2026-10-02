@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard General - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary);">Panel de Control General</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Visión integral de clientes, asuntos, control financiero y documentación.</p>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary" onclick="openModal('modalFiltroDashboard')">
+            <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+            <span>Período</span>
+        </button>
+        <a href="{% url 'ia_asistente:index' %}" class="btn btn-primary">
+            <i data-lucide="bot" style="width: 16px; height: 16px;"></i>
+            <span>Consultar Asistente IA</span>
+        </a>
+    </div>
+</div>
+
+<!-- Métricas Grid -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-icon" style="color: var(--primary); background: var(--primary-light);">
+            <i data-lucide="users" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>{{ total_clientes }}</h3>
+            <p>Clientes Activos</p>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon" style="color: #0284C7; background: #E0F2FE;">
+            <i data-lucide="briefcase" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>{{ procesos_en_proceso }}</h3>
+            <p>Asuntos en Proceso</p>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon" style="color: #D97706; background: #FEF3C7;">
+            <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>{{ procesos_pendientes }}</h3>
+            <p>Asuntos Pendientes</p>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon" style="color: #059669; background: #D1FAE5;">
+            <i data-lucide="folder-open" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>{{ total_documentos }}</h3>
+            <p>Documentos Registrados</p>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon" style="color: #DC2626; background: #FEE2E2;">
+            <i data-lucide="credit-card" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>Bs {{ total_gastos }}</h3>
+            <p>Gastos Totales Realizados</p>
+        </div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon" style="color: #7C3AED; background: #EDE9FE;">
+            <i data-lucide="alert-circle" style="width: 24px; height: 24px;"></i>
+        </div>
+        <div class="metric-data">
+            <h3>Bs {{ total_reembolso_pendiente }}</h3>
+            <p>Pendiente Reembolso (Fondos Propios)</p>
+        </div>
+    </div>
+</div>
+
+<!-- Secciones Principales -->
+<div class="dashboard-sections">
+    <!-- Asuntos Activos / Recientes -->
+    <div class="glass-panel">
+        <div class="card-header">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="layers" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Asuntos y Procesos Recientes</span>
+            </h3>
+            <a href="{% url 'procesos:index' %}" class="btn btn-secondary btn-sm">Ver todos</a>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <div class="custom-table-wrapper">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Asunto / Proceso</th>
+                            <th>Estado</th>
+                            <th>Prioridad</th>
+                            <th>Fecha Límite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for proc in ultimos_procesos %}
+                        <tr>
+                            <td style="font-weight: 600; color: var(--text-primary);">{{ proc.cliente.nombre_razon_social }}</td>
+                            <td>{{ proc.titulo }}</td>
+                            <td>
+                                {% if proc.estado == 'EN_PROCESO' %}
+                                    <span class="badge badge-primary">En Proceso</span>
+                                {% elif proc.estado == 'PENDIENTE' %}
+                                    <span class="badge badge-warning">Pendiente</span>
+                                {% elif proc.estado == 'FINALIZADO' %}
+                                    <span class="badge badge-success">Finalizado</span>
+                                {% else %}
+                                    <span class="badge badge-info">{{ proc.get_estado_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if proc.prioridad == 'URGENTE' %}
+                                    <span class="badge badge-danger">Urgente</span>
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ proc.get_prioridad_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ proc.fecha_limite|default:"Sin fecha" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+                                No hay procesos o asuntos registrados aún.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bitácora / Timeline de Actividades -->
+    <div class="glass-panel">
+        <div class="card-header">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="activity" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Últimas Actividades (Bitácora)</span>
+            </h3>
+            <a href="{% url 'bitacora:index' %}" class="btn btn-secondary btn-sm">Historial</a>
+        </div>
+        <div class="card-body">
+            <div class="timeline">
+                {% for act in ultimas_actividades %}
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                            <span>{{ act.fecha_actividad|date:"d/m/Y" }}</span>
+                            <span class="badge badge-info" style="font-size: 0.65rem;">{{ act.cliente.nombre_razon_social }}</span>
+                        </div>
+                        <strong style="color: var(--text-primary); font-size: 0.875rem;">{{ act.titulo }}</strong>
+                        <p style="font-size: 0.825rem; color: var(--text-secondary); margin-top: 0.25rem;">{{ act.descripcion|truncatewords:15 }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                    No hay actividades recientes registradas en la bitácora.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'dashboard/modal/filtrar.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard/dashboard.js' %}"></script>
+{% endblock %}

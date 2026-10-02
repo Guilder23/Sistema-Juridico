@@ -1,0 +1,24 @@
+/* Procesos Styles */
+.filters-badge-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.filter-chip {
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.filter-chip.active, .filter-chip:hover {
+    background: var(--primary-light);
+    border-color: #C7D2FE;
+    color: var(--primary);
+}

@@ -1,0 +1,38 @@
+<!-- Modal Historial Consultas IA -->
+<div class="modal-overlay" id="modalHistorialIA">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="help-circle" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Consultas Rápidas Recomendadas</span>
+            </h3>
+            <button class="modal-close" onclick="closeModal('modalHistorialIA')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                Haz clic en cualquier pregunta para enviarla directamente al asistente de IA con el modelo de Groq:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <button class="btn btn-secondary" style="text-align: left; justify-content: flex-start; padding: 0.85rem;" onclick="document.getElementById('chatInput').value = '¿En qué procesos está actualmente este cliente y qué documentos faltan?'; closeModal('modalHistorialIA');">
+                    <i data-lucide="message-square" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                    <span>"¿En qué procesos está actualmente este cliente y qué documentos faltan?"</span>
+                </button>
+                <button class="btn btn-secondary" style="text-align: left; justify-content: flex-start; padding: 0.85rem;" onclick="document.getElementById('chatInput').value = '¿Cuánto dinero gastamos en este cliente y cuánto dinero puso él?'; closeModal('modalHistorialIA');">
+                    <i data-lucide="coins" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                    <span>"¿Cuánto dinero gastamos en este cliente y cuánto dinero puso él?"</span>
+                </button>
+                <button class="btn btn-secondary" style="text-align: left; justify-content: flex-start; padding: 0.85rem;" onclick="document.getElementById('chatInput').value = '¿Qué gastos tengo pendientes de reembolso para este cliente?'; closeModal('modalHistorialIA');">
+                    <i data-lucide="credit-card" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                    <span>"¿Qué gastos tengo pendientes de reembolso para este cliente?"</span>
+                </button>
+                <button class="btn btn-secondary" style="text-align: left; justify-content: flex-start; padding: 0.85rem;" onclick="document.getElementById('chatInput').value = 'Dame un informe de gestión completo y estado actual de este cliente.'; closeModal('modalHistorialIA');">
+                    <i data-lucide="file-text" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                    <span>"Dame un informe de gestión completo y estado actual de este cliente."</span>
+                </button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalHistorialIA')">Cerrar</button>
+        </div>
+    </div>
+</div>

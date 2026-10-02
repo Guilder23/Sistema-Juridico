@@ -1,0 +1,71 @@
+<!-- Modal Editar Proceso -->
+<div class="modal-overlay" id="modalEditarProceso">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Actualizar Proceso / Asunto</h3>
+            <button class="modal-close" onclick="closeModal('modalEditarProceso')">&times;</button>
+        </div>
+        <form method="POST" id="formEditarProceso" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Título del Proceso / Asunto *</label>
+                    <input type="text" name="titulo" id="edit_proceso_titulo" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" id="edit_proceso_estado" class="form-control">
+                            <option value="EN_PROCESO">En Proceso</option>
+                            <option value="PENDIENTE">Pendiente</option>
+                            <option value="ESPERANDO_DOCUMENTACION">Esperando Documentación</option>
+                            <option value="ESPERANDO_CLIENTE">Esperando Cliente</option>
+                            <option value="FINALIZADO">Finalizado</option>
+                            <option value="CANCELADO">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prioridad</label>
+                        <select name="prioridad" id="edit_proceso_prioridad" class="form-control">
+                            <option value="BAJA">Baja</option>
+                            <option value="MEDIA">Media</option>
+                            <option value="ALTA">Alta</option>
+                            <option value="URGENTE">Urgente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Responsable Asignado</label>
+                        <select name="responsable_id" id="edit_proceso_responsable" class="form-control">
+                            <option value="">-- Sin asignar --</option>
+                            {% for u in usuarios %}
+                                <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha Límite</label>
+                        <input type="date" name="fecha_limite" id="edit_proceso_limite" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" id="edit_proceso_descripcion" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Observaciones</label>
+                    <textarea name="observaciones" id="edit_proceso_obs" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditarProceso')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

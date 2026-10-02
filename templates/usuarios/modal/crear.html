@@ -1,0 +1,65 @@
+<!-- Modal Crear Usuario -->
+<div class="modal-overlay" id="modalCrearUsuario">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Registrar Nuevo Usuario / Operador</h3>
+            <button class="modal-close" onclick="closeModal('modalCrearUsuario')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'usuarios:crear' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de Usuario *</label>
+                        <input type="text" name="username" class="form-control" required placeholder="Ej: maria.abogada">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña *</label>
+                        <input type="password" name="password" class="form-control" required placeholder="Contraseña de acceso">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombres</label>
+                        <input type="text" name="first_name" class="form-control" placeholder="Ej: María">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos</label>
+                        <input type="text" name="last_name" class="form-control" placeholder="Ej: Mamani">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Rol del Sistema</label>
+                        <select name="rol" class="form-control">
+                            <option value="GESTOR">Gestor (Clientes, Asuntos, Gastos, Docs)</option>
+                            <option value="ADMINISTRADOR">Administrador (Total)</option>
+                            <option value="CONSULTA">Consulta (Solo lectura)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" name="email" class="form-control" placeholder="maria@estudio.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="telefono" class="form-control" placeholder="+591 70000000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cargo / Área</label>
+                        <input type="text" name="cargo" class="form-control" placeholder="Ej: Abogada Asociada, Auxiliar Legal">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalCrearUsuario')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+            </div>
+        </form>
+    </div>
+</div>

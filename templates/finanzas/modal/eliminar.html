@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Movimiento -->
+<div class="modal-overlay" id="modalEliminarMovimiento">
+    <div class="modal-container" style="max-width: 460px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Registro</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarMovimiento')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarMovimiento" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Estás seguro de eliminar el movimiento <strong id="delete_concepto_movimiento" style="color: #fff;"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarMovimiento')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

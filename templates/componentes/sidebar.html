@@ -1,0 +1,63 @@
+<aside class="app-sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <i data-lucide="scale" style="width: 20px; height: 20px;"></i>
+        </div>
+        <div>
+            <div class="brand-text">LexDocs IA</div>
+            <small style="font-size: 0.7rem; color: var(--text-muted); display: block; font-weight: 500;">Gestión Documental & Legal</small>
+        </div>
+    </div>
+
+    <nav class="sidebar-menu">
+        <div class="menu-category">Principal</div>
+        <a href="{% url 'dashboard:index' %}" class="nav-item {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+            <span class="icon"><i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i></span>
+            <span>Dashboard</span>
+        </a>
+
+        <div class="menu-category">Gestión Central</div>
+        <a href="{% url 'clientes:index' %}" class="nav-item {% if request.resolver_match.app_name == 'clientes' %}active{% endif %}">
+            <span class="icon"><i data-lucide="users" style="width: 18px; height: 18px;"></i></span>
+            <span>Clientes</span>
+        </a>
+        <a href="{% url 'procesos:index' %}" class="nav-item {% if request.resolver_match.app_name == 'procesos' %}active{% endif %}">
+            <span class="icon"><i data-lucide="briefcase" style="width: 18px; height: 18px;"></i></span>
+            <span>Procesos / Asuntos</span>
+        </a>
+        <a href="{% url 'documentos:index' %}" class="nav-item {% if request.resolver_match.app_name == 'documentos' %}active{% endif %}">
+            <span class="icon"><i data-lucide="folder-open" style="width: 18px; height: 18px;"></i></span>
+            <span>Documentos</span>
+        </a>
+
+        <div class="menu-category">Finanzas & Control</div>
+        <a href="{% url 'finanzas:index' %}" class="nav-item {% if request.resolver_match.app_name == 'finanzas' %}active{% endif %}">
+            <span class="icon"><i data-lucide="coins" style="width: 18px; height: 18px;"></i></span>
+            <span>Gastos y Fondos</span>
+        </a>
+        <a href="{% url 'comprobantes:index' %}" class="nav-item {% if request.resolver_match.app_name == 'comprobantes' %}active{% endif %}">
+            <span class="icon"><i data-lucide="receipt" style="width: 18px; height: 18px;"></i></span>
+            <span>Comprobantes & OCR</span>
+        </a>
+        <a href="{% url 'bitacora:index' %}" class="nav-item {% if request.resolver_match.app_name == 'bitacora' %}active{% endif %}">
+            <span class="icon"><i data-lucide="history" style="width: 18px; height: 18px;"></i></span>
+            <span>Bitácora / Historial</span>
+        </a>
+
+        <div class="menu-category">Inteligencia & Reportes</div>
+        <a href="{% url 'ia_asistente:index' %}" class="nav-item {% if request.resolver_match.app_name == 'ia_asistente' %}active{% endif %}">
+            <span class="icon"><i data-lucide="bot" style="width: 18px; height: 18px;"></i></span>
+            <span>Asistente IA (Groq)</span>
+        </a>
+        <a href="{% url 'reportes:index' %}" class="nav-item {% if request.resolver_match.app_name == 'reportes' %}active{% endif %}">
+            <span class="icon"><i data-lucide="file-text" style="width: 18px; height: 18px;"></i></span>
+            <span>Informes PDF</span>
+        </a>
+
+        <div class="menu-category">Administración</div>
+        <a href="{% url 'usuarios:index' %}" class="nav-item {% if request.resolver_match.app_name == 'usuarios' %}active{% endif %}">
+            <span class="icon"><i data-lucide="user-cog" style="width: 18px; height: 18px;"></i></span>
+            <span>Usuarios y Roles</span>
+        </a>
+    </nav>
+</aside>

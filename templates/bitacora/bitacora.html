@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bitácora de Actividades - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/bitacora/bitacora.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">Línea de Tiempo & Bitácora de Actividades</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Registro histórico de sucesos para auditoría y memoria de la Inteligencia Artificial.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('modalCrearBitacora')">
+        <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
+        <span>Nueva Actividad</span>
+    </button>
+</div>
+
+<div class="glass-panel" style="padding: 2rem;">
+    <div class="timeline-list">
+        {% for act in actividades %}
+        <div class="timeline-row">
+            <div class="timeline-bullet">
+                <i data-lucide="bookmark" style="width: 12px; height: 12px; color: var(--primary);"></i>
+            </div>
+            <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.45rem;">
+                    <div>
+                        <span class="badge badge-info" style="font-size: 0.7rem; margin-right: 0.5rem;">
+                            {{ act.fecha_actividad|date:"d/m/Y" }}
+                        </span>
+                        <a href="{% url 'clientes:detalle' act.cliente.id %}" style="font-weight: 700; color: var(--text-primary);">
+                            {{ act.cliente.nombre_razon_social }}
+                        </a>
+                        {% if act.proceso %}
+                            <span style="color: var(--text-muted); font-size: 0.85rem;"> &bull; Asunto: {{ act.proceso.titulo }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="abrirModalEliminarBitacora('{{ act.id }}')">
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                    </button>
+                </div>
+
+                <h4 style="color: var(--text-primary); margin-bottom: 0.35rem; font-size: 0.95rem; font-weight: 700;">{{ act.titulo }}</h4>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">{{ act.descripcion }}</p>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.65rem;">
+                    Registrado por: {{ act.usuario.get_full_name|default:act.usuario.username|default:"Sistema" }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; color: var(--text-muted); padding: 3rem;">
+            No hay actividades registradas en la bitácora todavía.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'bitacora/modal/crear.html' %}
+    {% include 'bitacora/modal/eliminar.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/bitacora/bitacora.js' %}"></script>
+{% endblock %}

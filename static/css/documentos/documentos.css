@@ -1,0 +1,11 @@
+/* Documentos Styles */
+.file-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    background: #F1F5F9;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}

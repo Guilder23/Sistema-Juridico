@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Asistente IA RAG - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ia_asistente/ia_asistente.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">Asistente Virtual Jurídico-Documental (Groq AI)</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Consulta la información consolidada de clientes, procesos, fondos, comprobantes y bitácora con modelo <strong style="color: var(--primary);">openai/gpt-oss-20b</strong>.</p>
+    </div>
+    <button class="btn btn-secondary" onclick="openModal('modalHistorialIA')">
+        <i data-lucide="sparkles" style="width: 16px; height: 16px; color: var(--primary);"></i>
+        <span>Preguntas Frecuentes</span>
+    </button>
+</div>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div style="display: flex; align-items: center; gap: 1rem; width: 100%; max-width: 600px;">
+            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="user-check" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                <span>Contexto Cliente:</span>
+            </label>
+            <select id="chatClienteSelect" class="form-control" style="padding: 0.45rem 0.85rem;">
+                <option value="">-- General (Todos o sin cliente específico) --</option>
+                {% for c in clientes %}
+                    <option value="{{ c.id }}" {% if cliente_seleccionado and cliente_seleccionado.id == c.id %}selected{% endif %}>
+                        {{ c.nombre_razon_social }} ({{ c.ci_nit }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+            <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+            <span>Motor: Groq / openai/gpt-oss-20b</span>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-bubble assistant">
+            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="bot" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Bienvenido a tu Asistente Legal y Documental</span>
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Los documentos, asuntos, movimientos de dinero y comprobantes ya se encuentran organizados dentro del sistema. Puedes realizar consultas como:</p>
+            <ul style="margin: 0.75rem 0 0.75rem 1.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                <li><em>"¿En qué procesos está actualmente la empresa?"</em></li>
+                <li><em>"¿Cuánto dinero puso el cliente y cuánto gastamos?"</em></li>
+                <li><em>"¿Qué gastos tengo pendientes de reembolso?"</em></li>
+                <li><em>"Genera un resumen ejecutivo de actividades de este cliente."</em></li>
+            </ul>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Selecciona un cliente arriba para responderte con los datos exactos de su expediente.</p>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <textarea id="chatInput" rows="2" placeholder="Escribe tu consulta sobre el cliente, procesos, gastos o bitácora..."></textarea>
+        <button class="btn btn-primary" onclick="enviarMensajeIA()" style="align-self: flex-end; padding: 0.75rem 1.5rem;">
+            <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+            <span>Enviar</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'ia_asistente/modal/sugerencias.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/ia_asistente/ia_asistente.js' %}"></script>
+{% endblock %}

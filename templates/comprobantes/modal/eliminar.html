@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Comprobante -->
+<div class="modal-overlay" id="modalEliminarComprobante">
+    <div class="modal-container" style="max-width: 440px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Comprobante</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarComprobante')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarComprobante" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Seguro que deseas eliminar este comprobante fotográfico?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarComprobante')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

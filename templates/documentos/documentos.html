@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Repositorio Documental - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/documentos/documentos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">Gestión Documental Centralizada</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Archivos clasificados por cliente y proceso listos para análisis y consultas.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('modalSubirDocumento')">
+        <i data-lucide="upload-cloud" style="width: 16px; height: 16px;"></i>
+        <span>Subir Documento</span>
+    </button>
+</div>
+
+<!-- Filtros de Tipo Documental -->
+<div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+    <a href="{% url 'documentos:index' %}" class="btn btn-secondary btn-sm {% if not tipo_filtro %}btn-primary{% endif %}">Todos</a>
+    <a href="{% url 'documentos:index' %}?tipo=CONTRATO" class="btn btn-secondary btn-sm {% if tipo_filtro == 'CONTRATO' %}btn-primary{% endif %}">Contratos</a>
+    <a href="{% url 'documentos:index' %}?tipo=COMPROBANTE" class="btn btn-secondary btn-sm {% if tipo_filtro == 'COMPROBANTE' %}btn-primary{% endif %}">Comprobantes</a>
+    <a href="{% url 'documentos:index' %}?tipo=INFORME" class="btn btn-secondary btn-sm {% if tipo_filtro == 'INFORME' %}btn-primary{% endif %}">Informes</a>
+    <a href="{% url 'documentos:index' %}?tipo=LEGAL" class="btn btn-secondary btn-sm {% if tipo_filtro == 'LEGAL' %}btn-primary{% endif %}">Legales</a>
+</div>
+
+<div class="glass-panel">
+    <div class="custom-table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Cliente</th>
+                    <th>Proceso / Asunto</th>
+                    <th>Tipo</th>
+                    <th>Extensión</th>
+                    <th>Fecha Doc.</th>
+                    <th style="text-align: right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in documentos %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <i data-lucide="file-text" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                            <div>
+                                <strong style="color: var(--text-primary); font-size: 0.925rem;">{{ d.titulo }}</strong>
+                                {% if d.descripcion %}
+                                    <p style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.1rem;">{{ d.descripcion }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{% url 'clientes:detalle' d.cliente.id %}" style="color: var(--primary); font-weight: 600;">
+                            {{ d.cliente.nombre_razon_social }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if d.proceso %}
+                            <span style="font-size: 0.85rem;">{{ d.proceso.titulo }}</span>
+                        {% else %}
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">General</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge badge-info">{{ d.get_tipo_display }}</span></td>
+                    <td><span class="file-badge">{{ d.extension|default:"DOC"|upper }}</span></td>
+                    <td>{{ d.fecha_documento|date:"d/m/Y"|default:"-" }}</td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                            {% if d.archivo %}
+                                <a href="{{ d.archivo.url }}" target="_blank" class="btn btn-secondary btn-sm" download>
+                                    <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+                                    <span>Descargar</span>
+                                </a>
+                            {% endif %}
+                            <button class="btn btn-danger btn-sm" onclick="abrirModalEliminarDocumento('{{ d.id }}', '{{ d.titulo|escapejs }}')">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                        No se han subido documentos todavía.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'documentos/modal/crear.html' %}
+    {% include 'documentos/modal/eliminar.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/documentos/documentos.js' %}"></script>
+{% endblock %}

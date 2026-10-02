@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Expediente 360°: {{ cliente.nombre_razon_social }} - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/clientes/clientes.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'clientes:index' %}" class="btn btn-secondary btn-sm" style="margin-bottom: 1rem;">
+        <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+        <span>Volver a Clientes</span>
+    </a>
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary);">{{ cliente.nombre_razon_social }}</h1>
+                <span class="badge badge-success">{{ cliente.get_estado_display }}</span>
+            </div>
+            <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.9rem;">
+                CI/NIT: <strong style="color: var(--text-primary); font-family: var(--font-mono);">{{ cliente.ci_nit }}</strong> &bull; Tipo: {{ cliente.get_tipo_cliente_display }} &bull; Contacto: {{ cliente.telefono|default:"S/N" }} ({{ cliente.correo|default:"Sin correo" }})
+            </p>
+        </div>
+
+        <!-- Botones de Acción de IA para ESTE cliente -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="generarExpedienteIA('{{ cliente.id }}')">
+                <i data-lucide="file-check-2" style="width: 16px; height: 16px;"></i>
+                <span>Generar Expediente IA con sus Documentos</span>
+            </button>
+            <a href="{% url 'reportes:index' %}" class="btn btn-secondary">
+                <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+                <span>Informe PDF</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Layout con Asistente IA Dedicado al Cliente y sus pestañas -->
+<div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    
+    <!-- Columna Izquierda: Información de Asuntos, Documentos y Cuotas -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Planes de Pago y Cuotas del Cliente -->
+        <div class="glass-panel">
+            <div class="card-header">
+                <h3 style="font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="credit-card" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                    <span>Planes de Pago en Cuotas ({{ cliente.planes_pago.count }})</span>
+                </h3>
+                <a href="{% url 'finanzas:index' %}" class="btn btn-secondary btn-sm">+ Plan</a>
+            </div>
+            <div class="card-body">
+                {% for plan in cliente.planes_pago.all %}
+                <div class="plan-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong style="color: var(--text-primary);">{{ plan.titulo }}</strong>
+                        <span class="badge badge-info">{{ plan.get_estado_display }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        <span>Total: <strong style="color: var(--text-primary);">Bs {{ plan.monto_total }}</strong></span>
+                        <span>Pagado: <strong style="color: #059669;">Bs {{ plan.monto_pagado }}</strong></span>
+                        <span>Saldo: <strong style="color: #DC2626;">Bs {{ plan.saldo_pendiente }}</strong></span>
+                    </div>
+
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 0.5rem;">
+                        <small style="font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Cuotas:</small>
+                        {% for c in plan.cuotas.all %}
+                            <div class="cuota-pill {% if c.estado == 'PAGADA' %}cuota-pagada{% else %}cuota-pendiente{% endif %}">
+                                <strong>#{{ c.numero_cuota }}</strong> &bull; Bs {{ c.monto_esperado }} 
+                                <span>({{ c.get_estado_display }})</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: var(--text-muted); text-align: center; padding: 1rem;">No hay planes de cuotas activos para este cliente.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Asuntos y Procesos -->
+        <div class="glass-panel">
+            <div class="card-header">
+                <h3 style="font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="briefcase" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                    <span>Asuntos / Procesos ({{ procesos.count }})</span>
+                </h3>
+                <a href="{% url 'procesos:index' %}" class="btn btn-secondary btn-sm">Gestionar</a>
+            </div>
+            <div class="card-body">
+                {% for proc in procesos %}
+                    <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--text-primary); display: block; font-size: 0.9rem;">{{ proc.titulo }}</strong>
+                            <small style="color: var(--text-muted);">Límite: {{ proc.fecha_limite|default:"Sin fecha" }}</small>
+                        </div>
+                        <span class="badge badge-primary">{{ proc.get_estado_display }}</span>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--text-muted); text-align: center; padding: 1rem;">No tiene asuntos vinculados.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Documentos Subidos del Cliente -->
+        <div class="glass-panel">
+            <div class="card-header">
+                <h3 style="font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="folder-open" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                    <span>Documentos en Custodia ({{ documentos.count }})</span>
+                </h3>
+                <a href="{% url 'documentos:index' %}" class="btn btn-secondary btn-sm">Subir</a>
+            </div>
+            <div class="card-body">
+                {% for doc in documentos %}
+                    <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: var(--text-primary); display: block; font-size: 0.9rem;">{{ doc.titulo }}</strong>
+                            <small style="color: var(--text-muted);">{{ doc.get_tipo_display }} &bull; {{ doc.extension|upper }}</small>
+                        </div>
+                        {% if doc.archivo %}
+                            <a href="{{ doc.archivo.url }}" target="_blank" class="btn btn-secondary btn-sm">
+                                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i>
+                                <span>Ver</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p style="color: var(--text-muted); text-align: center; padding: 1rem;">No hay documentos subidos para este cliente.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna Derecha: IA EXCLUSIVA DE ESTE CLIENTE -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="glass-panel" style="display: flex; flex-direction: column; height: 100%;">
+            <div class="card-header" style="background: var(--primary-light);">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="bot" style="width: 20px; height: 20px; color: var(--primary);"></i>
+                    <div>
+                        <h3 style="font-size: 1rem; font-weight: 700; color: var(--primary);">IA Especializada del Cliente</h3>
+                        <small style="color: var(--text-muted);">Acceso en tiempo real a sus expedientes, cuotas y gastos</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Chat del Cliente -->
+            <div class="chat-mini-box">
+                <div class="chat-mini-messages" id="clienteChatMessages">
+                    <div class="chat-bubble assistant">
+                        <p style="font-size: 0.875rem; color: var(--text-primary);">
+                            Hola, soy la IA asignada a <strong>{{ cliente.nombre_razon_social }}</strong>. Puedo responderte cualquier detalle sobre sus documentos, estado de trámites, pagos en cuotas o gastos de este cliente.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="chat-input-area" style="padding: 0.75rem 1rem;">
+                    <textarea id="clienteChatInput" rows="2" placeholder="Pregunta sobre este cliente... (ej: ¿Cuáles cuotas están pendientes?)"></textarea>
+                    <button class="btn btn-primary" onclick="enviarMensajeClienteIA('{{ cliente.id }}')" style="align-self: flex-end; padding: 0.65rem 1rem;">
+                        <i data-lucide="send" style="width: 14px; height: 14px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para ver el Expediente Documental generado por IA -->
+<div class="modal-overlay" id="modalExpedienteIA">
+    <div class="modal-container ia-dossier-modal">
+        <div class="modal-header">
+            <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="file-check-2" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Expediente Documental Compilado por IA</span>
+            </h3>
+            <button class="modal-close" onclick="closeModal('modalExpedienteIA')">&times;</button>
+        </div>
+        <div class="modal-body" id="expedienteContent" style="max-height: 65vh; overflow-y: auto; line-height: 1.7; font-size: 0.925rem;">
+            <!-- Contenido dinámico del expediente -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalExpedienteIA')">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i data-lucide="printer" style="width: 14px; height: 14px;"></i>
+                <span>Imprimir Expediente</span>
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function enviarMensajeClienteIA(clienteId) {
+    const input = document.getElementById('clienteChatInput');
+    const mensaje = input.value.trim();
+    if (!mensaje) return;
+
+    const container = document.getElementById('clienteChatMessages');
+
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user';
+    userBubble.textContent = mensaje;
+    container.appendChild(userBubble);
+
+    input.value = '';
+    container.scrollTop = container.scrollHeight;
+
+    const loadingBubble = document.createElement('div');
+    loadingBubble.className = 'chat-bubble assistant';
+    loadingBubble.innerHTML = `<em>Consultando expediente de este cliente con Groq...</em>`;
+    container.appendChild(loadingBubble);
+    container.scrollTop = container.scrollHeight;
+
+    try {
+        const res = await fetch('/ia/consultar/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ pregunta: mensaje, cliente_id: clienteId })
+        });
+        const data = await res.json();
+        if (data.respuesta) {
+            let formatted = data.respuesta
+                .replace(/^### (.*$)/gim, '<h4 style="font-weight: 700; margin-top: 0.5rem;">$1</h4>')
+                .replace(/^## (.*$)/gim, '<h3 style="font-weight: 800; margin-top: 0.6rem;">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+                .replace(/^\* (.*$)/gim, '<li style="margin-left: 1rem;">$1</li>')
+                .replace(/\n/gim, '<br>');
+            loadingBubble.innerHTML = formatted;
+        } else {
+            loadingBubble.innerHTML = `<span style="color: var(--danger);">${data.error || 'Error'}</span>`;
+        }
+    } catch(e) {
+        loadingBubble.innerHTML = `<span style="color: var(--danger);">Error de conexión</span>`;
+    }
+    container.scrollTop = container.scrollHeight;
+}
+
+async function generarExpedienteIA(clienteId) {
+    const modal = document.getElementById('modalExpedienteIA');
+    const content = document.getElementById('expedienteContent');
+    content.innerHTML = `
+        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+                Analizando y compilando expediente documental...
+            </div>
+            <p>La IA está examinando todos los archivos, contratos, comprobantes y procesos de este cliente en custodia.</p>
+        </div>
+    `;
+    openModal('modalExpedienteIA');
+
+    try {
+        const res = await fetch(`/ia/expediente/${clienteId}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        });
+        const data = await res.json();
+        if (data.expediente) {
+            let formatted = data.expediente
+                .replace(/^### (.*$)/gim, '<h4 style="font-weight: 700; margin-top: 1rem; color: var(--text-primary);">$1</h4>')
+                .replace(/^## (.*$)/gim, '<h3 style="font-weight: 800; margin-top: 1.25rem; color: var(--primary);">$1</h3>')
+                .replace(/^# (.*$)/gim, '<h2 style="font-weight: 800; margin-top: 1.5rem; color: var(--text-primary);">$1</h2>')
+                .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+                .replace(/^\* (.*$)/gim, '<li style="margin-left: 1.25rem;">$1</li>')
+                .replace(/\n/gim, '<br>');
+            content.innerHTML = `
+                <div style="background: #FFFFFF; padding: 1rem; border-radius: 8px;">
+                    ${formatted}
+                </div>
+            `;
+        } else {
+            content.innerHTML = `<span style="color: var(--danger); font-weight: 600;">${data.error || 'No se pudo compilar el expediente.'}</span>`;
+        }
+    } catch(e) {
+        content.innerHTML = `<span style="color: var(--danger);">Error de conexión: ${e.message}</span>`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('clienteChatInput');
+    if (inp) {
+        inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                enviarMensajeClienteIA('{{ cliente.id }}');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

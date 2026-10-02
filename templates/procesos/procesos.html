@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Procesos y Asuntos - LexDocs IA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/procesos/procesos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-primary);">Gestión de Asuntos & Trámites</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Seguimiento puntual de procesos legales, administrativos y gestiones por cliente.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openModal('modalCrearProceso')">
+        <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i>
+        <span>Nuevo Proceso / Asunto</span>
+    </button>
+</div>
+
+<!-- Filtros de estado rápido -->
+<div class="filters-badge-group">
+    <a href="{% url 'procesos:index' %}" class="filter-chip {% if not estado_filtro %}active{% endif %}">Todos</a>
+    <a href="{% url 'procesos:index' %}?estado=EN_PROCESO" class="filter-chip {% if estado_filtro == 'EN_PROCESO' %}active{% endif %}">En Proceso</a>
+    <a href="{% url 'procesos:index' %}?estado=PENDIENTE" class="filter-chip {% if estado_filtro == 'PENDIENTE' %}active{% endif %}">Pendiente</a>
+    <a href="{% url 'procesos:index' %}?estado=ESPERANDO_DOCUMENTACION" class="filter-chip {% if estado_filtro == 'ESPERANDO_DOCUMENTACION' %}active{% endif %}">Esperando Documentos</a>
+    <a href="{% url 'procesos:index' %}?estado=FINALIZADO" class="filter-chip {% if estado_filtro == 'FINALIZADO' %}active{% endif %}">Finalizado</a>
+</div>
+
+<div class="glass-panel">
+    <div class="custom-table-wrapper">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Asunto / Título</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Responsable</th>
+                    <th>Fecha Límite</th>
+                    <th style="text-align: right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in procesos %}
+                <tr>
+                    <td>
+                        <strong style="color: var(--text-primary); font-size: 0.95rem;">{{ p.titulo }}</strong>
+                        {% if p.descripcion %}
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">{{ p.descripcion|truncatewords:10 }}</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'clientes:detalle' p.cliente.id %}" style="font-weight: 600; color: var(--primary);">
+                            {{ p.cliente.nombre_razon_social }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if p.estado == 'EN_PROCESO' %}
+                            <span class="badge badge-primary">En Proceso</span>
+                        {% elif p.estado == 'PENDIENTE' %}
+                            <span class="badge badge-warning">Pendiente</span>
+                        {% elif p.estado == 'FINALIZADO' %}
+                            <span class="badge badge-success">Finalizado</span>
+                        {% elif p.estado == 'ESPERANDO_DOCUMENTACION' %}
+                            <span class="badge badge-warning">Falta Documento</span>
+                        {% elif p.estado == 'CANCELADO' %}
+                            <span class="badge badge-danger">Cancelado</span>
+                        {% else %}
+                            <span class="badge badge-info">{{ p.get_estado_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if p.prioridad == 'URGENTE' %}
+                            <span class="badge badge-danger">Urgente</span>
+                        {% elif p.prioridad == 'ALTA' %}
+                            <span class="badge badge-warning">Alta</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{{ p.get_prioridad_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ p.responsable.get_full_name|default:p.responsable.username|default:"Sin asignar" }}</td>
+                    <td>{{ p.fecha_limite|default:"-" }}</td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                            <button class="btn btn-secondary btn-sm"
+                                    data-id="{{ p.id }}"
+                                    data-titulo="{{ p.titulo }}"
+                                    data-descripcion="{{ p.descripcion|default:'' }}"
+                                    data-estado="{{ p.estado }}"
+                                    data-prioridad="{{ p.prioridad }}"
+                                    data-responsable="{{ p.responsable_id|default:'' }}"
+                                    data-inicio="{{ p.fecha_inicio|default:'' }}"
+                                    data-limite="{{ p.fecha_limite|default:'' }}"
+                                    data-observaciones="{{ p.observaciones|default:'' }}"
+                                    onclick="abrirModalEditarProceso(this)">
+                                <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+                                <span>Editar</span>
+                            </button>
+                            <button class="btn btn-danger btn-sm"
+                                    data-id="{{ p.id }}"
+                                    data-titulo="{{ p.titulo }}"
+                                    onclick="abrirModalEliminarProceso(this)">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                        No hay procesos registrados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+    {% include 'procesos/modal/crear.html' %}
+    {% include 'procesos/modal/editar.html' %}
+    {% include 'procesos/modal/eliminar.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/procesos/procesos.js' %}"></script>
+{% endblock %}

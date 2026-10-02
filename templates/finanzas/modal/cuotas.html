@@ -1,0 +1,127 @@
+<!-- Modal Crear Plan de Pago en Cuotas -->
+<div class="modal-overlay" id="modalCrearPlanPago">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="credit-card" style="width: 18px; height: 18px; color: var(--primary);"></i>
+                <span>Nuevo Plan de Pago en Cuotas</span>
+            </h3>
+            <button class="modal-close" onclick="closeModal('modalCrearPlanPago')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'finanzas:crear_plan' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Cliente *</label>
+                    <select name="cliente_id" class="form-control" required>
+                        <option value="">-- Seleccione Cliente --</option>
+                        {% for c in clientes %}
+                            <option value="{{ c.id }}">{{ c.nombre_razon_social }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Asunto / Proceso (Opcional)</label>
+                    <select name="proceso_id" class="form-control">
+                        <option value="">-- General / Sin proceso específico --</option>
+                        {% for p in procesos %}
+                            <option value="{{ p.id }}">{{ p.cliente.nombre_razon_social }} - {{ p.titulo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Concepto / Título del Honorario *</label>
+                    <input type="text" name="titulo" class="form-control" required placeholder="Ej: Honorarios Trámite de Registro y Constitución">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Monto Total Acordado (Bs) *</label>
+                        <input type="number" step="0.01" name="monto_total" class="form-control" required placeholder="Ej: 3000.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Número de Cuotas *</label>
+                        <input type="number" name="numero_cuotas" min="1" max="24" class="form-control" value="3" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Fecha Primera Cuota *</label>
+                        <input type="date" name="fecha_inicio" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Frecuencia / Intervalo</label>
+                        <select name="intervalo_dias" class="form-control">
+                            <option value="30">Mensual (cada 30 días)</option>
+                            <option value="15">Quincenal (cada 15 días)</option>
+                            <option value="7">Semanal (cada 7 días)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Observaciones</label>
+                    <textarea name="observaciones" class="form-control" rows="2" placeholder="Condiciones del acuerdo de cuotas..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalCrearPlanPago')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Generar Plan y Cuotas</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Cobrar Cuota Individual -->
+<div class="modal-overlay" id="modalPagarCuota">
+    <div class="modal-container" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="check-circle" style="width: 18px; height: 18px; color: var(--success);"></i>
+                <span>Registrar Cobro de Cuota</span>
+            </h3>
+            <button class="modal-close" onclick="closeModal('modalPagarCuota')">&times;</button>
+        </div>
+        <form method="POST" id="formPagarCuota" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Registrando pago para la <strong id="lblNumeroCuota" style="color: var(--text-primary);"></strong> del plan <strong id="lblTituloPlan" style="color: var(--text-primary);"></strong>.
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label">Monto Cobrado (Bs) *</label>
+                    <input type="number" step="0.01" name="monto_pagado" id="pay_monto_pagado" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Fecha de Cobro *</label>
+                        <input type="date" name="fecha_pago" id="pay_fecha_pago" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Método de Pago</label>
+                        <select name="metodo_pago" class="form-control">
+                            <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                            <option value="QR">Pago QR / Móvil</option>
+                            <option value="EFECTIVO">Efectivo</option>
+                            <option value="TARJETA">Tarjeta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Referencia / Comprobante (Opcional)</label>
+                    <input type="text" name="comprobante_ref" class="form-control" placeholder="Ej: Recibo #482, Transf #99281">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalPagarCuota')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar Cobro</button>
+            </div>
+        </form>
+    </div>
+</div>

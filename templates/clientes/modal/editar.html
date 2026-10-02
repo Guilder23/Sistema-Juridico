@@ -1,0 +1,73 @@
+<!-- Modal Editar Cliente -->
+<div class="modal-overlay" id="modalEditarCliente">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Editar Información de Cliente</h3>
+            <button class="modal-close" onclick="closeModal('modalEditarCliente')">&times;</button>
+        </div>
+        <form method="POST" id="formEditarCliente" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre o Razón Social *</label>
+                        <input type="text" name="nombre_razon_social" id="edit_nombre_razon_social" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CI / NIT *</label>
+                        <input type="text" name="ci_nit" id="edit_ci_nit" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cliente</label>
+                        <select name="tipo_cliente" id="edit_tipo_cliente" class="form-control">
+                            <option value="EMPRESA">Empresa / Persona Jurídica</option>
+                            <option value="INDIVIDUAL">Persona Natural / Individual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Empresa Relacionada</label>
+                        <input type="text" name="empresa_relacionada" id="edit_empresa_relacionada" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono / Celular</label>
+                        <input type="text" name="telefono" id="edit_telefono" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" name="correo" id="edit_correo" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" id="edit_estado" class="form-control">
+                            <option value="ACTIVO">Activo</option>
+                            <option value="INACTIVO">Inactivo</option>
+                            <option value="SUSPENDIDO">Suspendido</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" name="direccion" id="edit_direccion" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Observaciones</label>
+                    <textarea name="observaciones" id="edit_observaciones" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditarCliente')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Actualizar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

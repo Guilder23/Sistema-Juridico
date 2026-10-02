@@ -1,0 +1,22 @@
+<!-- Modal Eliminar Cliente -->
+<div class="modal-overlay" id="modalEliminarCliente">
+    <div class="modal-container" style="max-width: 460px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Confirmar Eliminación</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarCliente')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarCliente" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar permanentemente al cliente <strong id="delete_nombre_cliente" style="color: #fff;"></strong>?</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
+                    Se eliminarán también todos los asuntos, documentos, gastos y registros de bitácora vinculados en cascada.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarCliente')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

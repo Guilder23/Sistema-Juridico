@@ -1,0 +1,19 @@
+<!-- Modal Eliminar Proceso -->
+<div class="modal-overlay" id="modalEliminarProceso">
+    <div class="modal-container" style="max-width: 460px;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color: var(--danger);">Eliminar Proceso</h3>
+            <button class="modal-close" onclick="closeModal('modalEliminarProceso')">&times;</button>
+        </div>
+        <form method="POST" id="formEliminarProceso" action="">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>¿Deseas eliminar el proceso <strong id="delete_titulo_proceso" style="color: #fff;"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalEliminarProceso')">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

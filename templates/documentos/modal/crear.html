@@ -1,0 +1,73 @@
+<!-- Modal Subir Documento -->
+<div class="modal-overlay" id="modalSubirDocumento">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Subir y Clasificar Documento</h3>
+            <button class="modal-close" onclick="closeModal('modalSubirDocumento')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'documentos:subir' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Cliente *</label>
+                    <select name="cliente_id" class="form-control" required>
+                        <option value="">-- Seleccione Cliente --</option>
+                        {% for c in clientes %}
+                            <option value="{{ c.id }}">{{ c.nombre_razon_social }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Proceso / Asunto Relacionado (Opcional)</label>
+                    <select name="proceso_id" class="form-control">
+                        <option value="">-- General / Sin proceso específico --</option>
+                        {% for p in procesos %}
+                            <option value="{{ p.id }}">{{ p.cliente.nombre_razon_social }} &bull; {{ p.titulo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Título o Nombre del Documento *</label>
+                        <input type="text" name="titulo" class="form-control" required placeholder="Ej: Contrato de Prestación de Servicios 2026">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo / Clasificación *</label>
+                        <select name="tipo" class="form-control">
+                            <option value="CONTRATO">Contrato</option>
+                            <option value="COMPROBANTE">Comprobante</option>
+                            <option value="INFORME">Informe</option>
+                            <option value="ESCANEO">Escaneo</option>
+                            <option value="FOTOGRAFIA">Fotografía</option>
+                            <option value="NOTA">Nota</option>
+                            <option value="LEGAL">Documento Legal / Trámite</option>
+                            <option value="OTRO">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Seleccionar Archivo (PDF, Word, Excel, Img) *</label>
+                        <input type="file" name="archivo" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha del Documento</label>
+                        <input type="date" name="fecha_documento" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción / Metadatos</label>
+                    <textarea name="descripcion" class="form-control" rows="2" placeholder="Resumen del documento, partes involucradas, etc."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalSubirDocumento')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Subir Documento</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<!-- Modal Crear Cliente -->
+<div class="modal-overlay" id="modalCrearCliente">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Registrar Nuevo Cliente</h3>
+            <button class="modal-close" onclick="closeModal('modalCrearCliente')">&times;</button>
+        </div>
+        <form method="POST" action="{% url 'clientes:crear' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre o Razón Social *</label>
+                        <input type="text" name="nombre_razon_social" class="form-control" required placeholder="Ej: Empresa ABC S.R.L.">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CI / NIT *</label>
+                        <input type="text" name="ci_nit" class="form-control" required placeholder="Ej: 1029384029">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cliente</label>
+                        <select name="tipo_cliente" class="form-control">
+                            <option value="EMPRESA">Empresa / Persona Jurídica</option>
+                            <option value="INDIVIDUAL">Persona Natural / Individual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Empresa Relacionada</label>
+                        <input type="text" name="empresa_relacionada" class="form-control" placeholder="Grupo o empresa matriz">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono / Celular</label>
+                        <input type="text" name="telefono" class="form-control" placeholder="+591 70000000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" name="correo" class="form-control" placeholder="contacto@empresa.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dirección</label>
+                    <input type="text" name="direccion" class="form-control" placeholder="Av. Principal #123">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Observaciones</label>
+                    <textarea name="observaciones" class="form-control" rows="3" placeholder="Detalles de interés..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalCrearCliente')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+            </div>
+        </form>
+    </div>
+</div>
