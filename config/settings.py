@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     # Módulos del Sistema (dentro de apps/)
-    'apps.usuarios',
+    'apps.usuarios.apps.UsuariosConfig',
     'apps.clientes',
     'apps.procesos',
     'apps.documentos',
@@ -123,6 +123,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/usuarios/login/'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_REDIRECT_URL = '/dashboard/'
+SOCIALACCOUNT_STORE_TOKENS = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

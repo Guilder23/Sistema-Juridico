@@ -53,6 +53,10 @@
             <span class="icon"><i data-lucide="file-text" style="width: 18px; height: 18px;"></i></span>
             <span>Informes PDF</span>
         </a>
+        <a href="{% url 'dashboard:index' %}" class="nav-item {% if request.resolver_match.namespace == 'dashboard' %}active{% endif %}">
+            <span class="icon"><i data-lucide="calendar" style="width: 18px; height: 18px;"></i></span>
+            <span>Google Workspace</span>
+        </a>
 
         <div class="menu-category">Administración</div>
         <a href="{% url 'usuarios:index' %}" class="nav-item {% if request.resolver_match.app_name == 'usuarios' %}active{% endif %}">
